@@ -1,5 +1,3 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/go
 {
 	"name": "Go",
 	"image": "mcr.microsoft.com/devcontainers/go:1-1.22-bookworm",
@@ -21,5 +19,10 @@
 	// "workspaceFolder": "/usr/local/go/src/go",
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
-	"features": {}
+	"features": {},
+
+	// Mount local SSH keys
+	"mounts": [
+		// "source=/<user path>/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+	]
 }
