@@ -146,7 +146,7 @@ func (m *Memory3) Fibonacci(n int) (int, error) {
 type Memory4 struct {
 	cache map[int]int
 	last  int
-	lock  sync.Mutex
+	lock  sync.RWMutex
 }
 
 func NewCache4() *Memory4 {
@@ -160,11 +160,13 @@ func (m *Memory4) Fibonacci(n int) int {
 	if n < 0 || n > 92 {
 		return -1
 	}
-	m.lock.Lock()
+	m.lock.RLock()
 	if n <= m.last {
-		m.lock.Unlock()
+		m.lock.RUnlock()
 		return m.cache[n]
 	}
+	m.lock.RUnlock()
+	m.lock.Lock()
 	a := m.cache[m.last-1]
 	b := m.cache[m.last]
 	for i := m.last + 1; i <= n; i++ {
@@ -185,28 +187,34 @@ func main() {
 	f3 := NewCache3()
 	f4 := NewCache4()
 	fibo := []int{5, 10, 15, 20, 20, 25, 30, 30, 35, 40, 40, 45, 50, 60, 70, 80, 90, 92}
-	for _, v := range fibo {
-		var duration time.Duration
-		start0 := time.Now()
-		var value any = Fibonacci(v)
-		duration = time.Since(start0)
-		fmt.Printf("Fibonacci(%d) = %d, Time: %v\n", v, value, duration)
-		start1 := time.Now()
-		value, _ = f1.Fibonacci(v)
-		duration = time.Since(start1)
-		fmt.Printf("Fibonacci1(%d) = %d, Time: %v, Memory: %d\n", v, value, duration, len(f1.cache))
-		start2 := time.Now()
-		value, _ = f2.Fibonacci(v)
-		duration = time.Since(start2)
-		fmt.Printf("Fibonacci2(%d) = %d, Time: %v, Memory: %d\n", v, value, duration, len(f2.cache))
-		start3 := time.Now()
-		value, _ = f3.Fibonacci(v)
-		duration = time.Since(start3)
-		fmt.Printf("Fibonacci3(%d) = %d, Time: %v, Memory: %d\n", v, value, duration, len(f3.cache))
-		start4 := time.Now()
-		value = f4.Fibonacci(v)
-		duration = time.Since(start4)
-		fmt.Printf("Fibonacci4(%d) = %d, Time: %v, Memory: %d\n", v, value, duration, len(f4.cache))
-		fmt.Println()
+	var wg sync.WaitGroup
+	for _, n := range fibo {
+		wg.Add(1)
+		go func(v int) {
+			defer wg.Done()
+			var duration time.Duration
+			start0 := time.Now()
+			var value any = Fibonacci(v)
+			duration = time.Since(start0)
+			fmt.Printf("Fibonacci(%d) = %d, Time: %v\n", v, value, duration)
+			start1 := time.Now()
+			value, _ = f1.Fibonacci(v)
+			duration = time.Since(start1)
+			fmt.Printf("Fibonacci1(%d) = %d, Time: %v, Memory: %d\n", v, value, duration, len(f1.cache))
+			start2 := time.Now()
+			value, _ = f2.Fibonacci(v)
+			duration = time.Since(start2)
+			fmt.Printf("Fibonacci2(%d) = %d, Time: %v, Memory: %d\n", v, value, duration, len(f2.cache))
+			start3 := time.Now()
+			value, _ = f3.Fibonacci(v)
+			duration = time.Since(start3)
+			fmt.Printf("Fibonacci3(%d) = %d, Time: %v, Memory: %d\n", v, value, duration, len(f3.cache))
+			start4 := time.Now()
+			value = f4.Fibonacci(v)
+			duration = time.Since(start4)
+			fmt.Printf("Fibonacci4(%d) = %d, Time: %v, Memory: %d\n", v, value, duration, len(f4.cache))
+			fmt.Println()
+		}(n)
+		wg.Wait()
 	}
 }
