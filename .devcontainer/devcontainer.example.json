@@ -23,6 +23,6 @@
 
 	// Mount local SSH keys
 	"mounts": [
-		// "source=/<user path>/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+		"source=/<user_folder>/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
 	]
 }
