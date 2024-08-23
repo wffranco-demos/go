@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"go/test/mypackage"
+
+	"github.com/wffranco-demos/go/udemy/test/mypackage"
 )
 
 func main() {
