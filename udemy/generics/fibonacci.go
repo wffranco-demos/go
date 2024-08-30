@@ -1,6 +1,10 @@
 package fibonacci
 
-func Fibonacci[T int | int8 | int16 | int32 | int64](n T) T {
+type Int interface {
+	int | int8 | int16 | int32 | int64
+}
+
+func Fibonacci[T Int](n T) T {
 	sign := T(1)
 	if n < 0 {
 		n = -n
