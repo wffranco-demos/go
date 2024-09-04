@@ -1,0 +1,30 @@
+# EditorConfig is awesome: https://editorconfig.org
+
+# Top-most EditorConfig file
+root = true
+
+# Unix-style newlines
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+
+# Matches multiple files with the same extension
+[*.{js,jsx,ts,tsx,html,css,scss,json,yml,yaml,md}]
+indent_style = space
+indent_size = 2
+
+# Matches the exact files either package.json or .travis.yml
+[{package.json,.travis.yml}]
+indent_style = space
+indent_size = 2
+
+# Matches the .editorconfig file itself
+[.editorconfig]
+indent_style = space
+indent_size = 2
+
+[*.go]
+indent_style = tab
+indent_size = 2
+tab_width = 2
